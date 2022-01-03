@@ -1,52 +1,52 @@
 clc
+close all
 clear variables
-
+ 
 validateKinematics()
+
 function y = validateKinematics()
 phiRange = (0:1:360);
 theta_1Range = (0:1:180);
-theta_2Range = (0:1:90); 
+theta_2Range = (0:1:180);
 
 phiSpinValidation = phiSpin(phiRange, 90, 0, 1,1);
-xyPlot(phiSpinValidation, 'phi')
+xyzPlot(phiSpinValidation, 'phiRange')
+xyzPlot3(phiSpinValidation, 'phiRange')
 
 th1SpinValidation = th1Spin(0, theta_1Range, 0, 1, 1);
-xzPlot(th1SpinValidation, 'theta 1')
-yzPlot(th1SpinValidation, 'theta 1')
+xyzPlot(th1SpinValidation, 'theta_1Range')
+xyzPlot3(th1SpinValidation, 'theta_1Range')
 
 th2SpinValidation = th2Spin(0, 90, theta_2Range, 1, 1);
-xzPlot(th2SpinValidation, 'theta 2')
-yzPlot(th2SpinValidation, 'theta 2')
+xyzPlot(th2SpinValidation, 'theta_2Range')
+xyzPlot3(th2SpinValidation, 'theta_2Range')
 end
 
-function y = xyPlot(xyz, title)
+function y = xyzPlot3(xyz, title)
 figure('Name',title,'NumberTitle','off')
-plot3(xyz(:,2),xyz(:,3),xyz(:,1)) 
+plot3(xyz(:,2),xyz(:,3),xyz(:,4))
 ylabel('Y')
 xlabel('X')
-zlabel('deg') 
+zlabel('Z')
 end
 
-function y = xzPlot(xyz, title)
+function y = xyzPlot(xyz, title)
 figure('Name',title,'NumberTitle','off')
-plot3(xyz(:,2),xyz(:,4),xyz(:,1)) 
-ylabel('Z')
-xlabel('X')
-zlabel('deg') 
-end
 
-function y = yzPlot(xyz, title)
-figure('Name',title,'NumberTitle','off')
-plot3(xyz(:,4),xyz(:,3),xyz(:,1)) 
-ylabel('Y')
-xlabel('Z')
-zlabel('deg') 
+plot(xyz(:,2))
+hold on
+plot(xyz(:,3))
+hold on
+plot(xyz(:,4))
+hold off
+legend({'x','y','z'},'Location','southwest')
+zlabel('deg')
 end
 
 function y = phiSpin(range, theta_1, theta_2, r,l)
 y = zeros(size(range,2),3);
 for index = range
-y(index+1,:) = getCoordinatesM(index, theta_1, theta_2, r,l); 
+    y(index+1,:) = getCoordinatesM(index, theta_1, theta_2, r,l);
 end
 y = [range',y];
 end
@@ -54,7 +54,7 @@ end
 function y = th1Spin(phi, range, theta_2, r,l)
 y = zeros(size(range,2),3);
 for index = range
-y(index+1,:) = getCoordinatesM(phi, index, theta_2, r,l); 
+    y(index+1,:) = getCoordinatesM(phi, index, theta_2, r,l);
 end
 y = [range',y];
 end
@@ -62,12 +62,12 @@ end
 function y = th2Spin(phi, theta_1, range, r,l)
 y = zeros(size(range,2),3);
 for index = range
-y(index+1,:) = getCoordinatesM(phi, theta_1, index, r,l); 
+    y(index+1,:) = getCoordinatesM(phi, theta_1, index, r,l);
 end
 y = [range',y];
 end
 
-function xyz = getCoordinatesM(phi, theta_1, theta_2, r,l)  
+function xyz = getCoordinatesM(phi, theta_1, theta_2, r,l)
 c_phi = cosd(phi);
 s_phi = sind(phi);
 c_theta_1 = cosd(theta_1);
@@ -79,12 +79,7 @@ A = [c_phi -s_phi 0 0; s_phi c_phi 0 0 ; 0 0 1 0; 0 0 0 1];
 B = [c_theta_1 0 -s_theta_1 0; 0 1 0 0 ; s_theta_1 0 c_theta_1 0 ;0 0 0 1];
 C = [1 0 0 0; 0 1 0 0 ; 0 0 1 -r; 0 0 0 1];
 D = [c_theta_2 0 s_theta_2 0; 0 1 0 0 ; -s_theta_2 0 c_theta_2 0 ;0 0 0 1];
-E = [1 0 0 0; 0 1 0 0 ; 0 0 1 -l; 0 0 0 1];  
+E = [1 0 0 0; 0 1 0 0 ; 0 0 1 -l; 0 0 0 1];
 T = A*B*C*D*E;
-xyz = T(1:3,4)';
-end 
-
-
-
-
-
+xyz = T(1:3,4).';
+end  
