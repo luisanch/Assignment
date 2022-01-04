@@ -53,3 +53,20 @@ z_dot = diff(xyz(3),t);
 T_b = 0.5*m*(x_dot^2 + y_dot^2 + z_dot^2);
 L_b = T_b  - U;
 
+%% diferential equations for Lagrangian
+dL_dPhi = diff(L_b, phi(t));
+dL_dPhi_dot = diff(L_b, diff(phi(t),t));
+dt_dL_dPhi_dot = diff(dL_dPhi_dot,t);
+
+dL_dTheta_1 = diff(L_b, theta_1(t));
+dL_dTheta_1_dot = diff(L_b, diff(theta_1(t),t));
+dt_dL_dTheta_1_dot = diff(dL_dTheta_1_dot,t);
+
+dL_dTheta_2 = diff(L_b, theta_2(t));
+dL_dTheta_2_dot = diff(L_b, diff(theta_2(t),t));
+dt_dL_dTheta_2_dot = diff(dL_dTheta_2_dot,t);
+
+dL_dr = diff(L_b, r(t));
+dL_dr_dot = diff(L_b, diff(r(t),t));
+dt_dL_dr_dot = diff(dL_dr_dot,t);
+
