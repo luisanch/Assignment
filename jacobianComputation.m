@@ -13,7 +13,9 @@ s_theta_2 = sin(theta_2);
 A = [c_phi -s_phi 0 0; s_phi c_phi 0 0 ; 0 0 1 0; 0 0 0 1];
 B = [c_theta_1 0 -s_theta_1 0; 0 1 0 0 ; s_theta_1 0 c_theta_1 0 ;0 0 0 1];
 C = [1 0 0 0; 0 1 0 0 ; 0 0 1 -r; 0 0 0 1];
-D = [c_theta_2 0 s_theta_2 0; 0 1 0 0 ; -s_theta_2 0 c_theta_2 0 ;0 0 0 1];
+
+%Amneh says this should rotate like this
+D = [c_theta_2 0 -s_theta_2 0; 0 1 0 0 ; s_theta_2 0 c_theta_2 0 ;0 0 0 1];
 E = [1 0 0 0; 0 1 0 0 ; 0 0 1 -l; 0 0 0 1];
 T = A*B*C*D*E;
 xyz = simplify(T(1:3,4), 'Steps', 10);
