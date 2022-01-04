@@ -58,19 +58,25 @@ dL_dPhi = diff(L_b, phi(t));
 dL_dPhi_dot = diff(L_b, diff(phi(t),t));
 dt_dL_dPhi_dot = diff(dL_dPhi_dot,t);
 eqPhi = dL_dPhi - dt_dL_dPhi_dot;
+eqPhi = simplify(eqPhi, 'Steps', 10);
 
 dL_dTheta_1 = diff(L_b, theta_1(t));
 dL_dTheta_1_dot = diff(L_b, diff(theta_1(t),t));
 dt_dL_dTheta_1_dot = diff(dL_dTheta_1_dot,t);
 eqTheta_1 = dL_dTheta_1 - dt_dL_dTheta_1_dot;
+eqTheta_1 = simplify(eqTheta_1, 'Steps', 10);
 
 dL_dTheta_2 = diff(L_b, theta_2(t));
 dL_dTheta_2_dot = diff(L_b, diff(theta_2(t),t));
 dt_dL_dTheta_2_dot = diff(dL_dTheta_2_dot,t);
 eqTheta_2 = dL_dTheta_2 - dt_dL_dTheta_2_dot;
+eqTheta_2 = simplify(eqTheta_2, 'Steps', 10);
 
 dL_dr = diff(L_b, r(t));
 dL_dr_dot = diff(L_b, diff(r(t),t));
 dt_dL_dr_dot = diff(dL_dr_dot,t);
 eqR = dL_dr - dt_dL_dr_dot;
+eqR = simplify(eqR, 'Steps', 10);
+
+eqs = [eqPhi; eqTheta_1; eqTheta_2; eqR];
 
