@@ -22,12 +22,13 @@ T = A*B*C*D*E;
 xyz = simplify(T(1:3,4), 'Steps', 10);
 J = simplify(jacobian(xyz, [phi(t) r(t) theta_1(t) theta_2(t)]), 'Steps', 10);
 
-%% Conservative energies  
+%% Unit vector op
 T_OP = A*B*C;
 xyz_OP = simplify(T_OP(1:3,4), 'Steps', 10); 
 u_OP = xyz_OP./(xyz_OP(1)^2+xyz_OP(2)^2+xyz_OP(3)^2)^(1/2);
 u_OP = simplify(u_OP, 'Steps', 10); 
 
+%% Conservative energies   
 G_f = m*g*xyz(3);
 K_f = 0.5*k*(r(t)-r_0)^2;
 
