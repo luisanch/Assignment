@@ -22,7 +22,7 @@ T = A*B*C*D*E;
 xyz = simplify(T(1:3,4), 'Steps', 10);
 J = simplify(jacobian(xyz, [phi r theta_1 theta_2]), 'Steps', 10);
 
-% conservative energies  
+%% Conservative energies  
 T_OP = A*B*C;
 xyz_OP = simplify(T_OP(1:3,4), 'Steps', 10); 
 u_OP = xyz_OP./(xyz_OP(1)^2+xyz_OP(2)^2+xyz_OP(3)^2)^(1/2);
@@ -37,7 +37,10 @@ U_F_theta_1 = diff(U,theta_1);
 U_F_theta_2 = diff(U,theta_2);
 U_F_r = diff(U,r); 
 
-% kinetic energy
+%% Kinetic energy
 xyz_dot = simplify(J*[phi;theta_1;theta_2;r], 'Steps',10);
-T = simplify(0.5*m*sum(xyz_dot.^2), 'Steps',50);
+T = 0.5*m*sum(xyz_dot.^2);
+
+%% Lagrangian
+L = T - U;
 
