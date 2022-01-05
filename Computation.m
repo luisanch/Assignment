@@ -85,8 +85,6 @@ Q_r = dL_dr - dt_dL_dr_dot;
 Q_r = simplify(Q_r, 'Steps', 10);
 
 eqs = [ Q_Phi; Q_Theta_1; Q_Theta_2; Q_r];
-
 %% rheonomic holonomic Constraint
-Teqs = [dt_dL_dPhi_dot; dt_dL_dTheta_1_dot; dt_dL_dTheta_2_dot ; dt_dL_dr_dot];
-Ueqs = [dL_dPhi;dL_dTheta_1;dL_dTheta_2;dL_dr];
-s_lambda = solve(Teqs == Ueqs.*lambda, lambda); 
+
+
