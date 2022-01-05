@@ -20,6 +20,7 @@ D = [c_theta_2 0 -s_theta_2 0; 0 1 0 0 ; s_theta_2 0 c_theta_2 0 ;0 0 0 1];
 E = [1 0 0 0; 0 1 0 0 ; 0 0 1 -l; 0 0 0 1];
 T = A*B*C*D*E;
 xyz = T(1:3,4);
+
 J = jacobian(xyz, [phi(t) r(t) theta_1(t) theta_2(t)]);
 
 %% Conservative energies
@@ -44,10 +45,7 @@ z_dot = diff(xyz(3),t);
 xyz_dot = [x_dot;
     y_dot;
     z_dot]; 
-v_sq = x_dot^2 + y_dot^2 + z_dot^2;
-
-%(sp*(s1*r' + l*c12*(t1' + t2') + c1*r*t1') + cp*(l*s12 + s1*r)*p')^2 + (cp*(s1*r' + l*c12*(t1' + t2') + c1*r*t1') - sp*(l*s12 + s1*r)*p')^2 + (l*s12*(t1' + t2') - c1*r' + s1*r*t1')^2
-
+v_sq = x_dot^2 + y_dot^2 + z_dot^2; 
 T = 0.5*m*(x_dot^2 + y_dot^2 + z_dot^2);
 
 %% Lagrangian
@@ -75,6 +73,11 @@ dt_dL_dr_dot = diff(dL_dr_dot,t);
 Q_r = dL_dr - dt_dL_dr_dot; 
 
 eqs = [ Q_Phi; Q_Theta_1; Q_Theta_2; Q_r];
+
 %% rheonomic holonomic Constraint
 lambda = dt_dL_dPhi_dot; %
 lambda = simplify(lambda, 'Steps', 1000);
+% m*(l*s12 + s1*r)*(2*s1*p!*r! + l*s12*p!! + s1*r*p!! + 2*c1*r*p!*t1! + 2*l*c12*p!*t1! + 2*l*c12*p!*t2!)
+% 2*p!*m*(l*s12+r*s1)(s1*r!+c1*r*t1!+l*c12*t!+lc12t2!)
+% u: (l*s12+r*s1), u!: (s1*r!+c1*r*t1!+l*c12*t!+lc12t2!)
+% 2*p!*m*u*u!
