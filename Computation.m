@@ -19,14 +19,8 @@ C = [1 0 0 0; 0 1 0 0 ; 0 0 1 -r(t); 0 0 0 1];
 D = [c_theta_2 0 -s_theta_2 0; 0 1 0 0 ; s_theta_2 0 c_theta_2 0 ;0 0 0 1];
 E = [1 0 0 0; 0 1 0 0 ; 0 0 1 -l; 0 0 0 1];
 T = A*B*C*D*E;
-xyz = simplify(T(1:3,4), 'Steps', 10);
-J = simplify(jacobian(xyz, [phi(t) r(t) theta_1(t) theta_2(t)]), 'Steps', 10);
-
-%% Unit vector op
-T_OP = A*B*C;
-xyz_OP = simplify(T_OP(1:3,4), 'Steps', 10);
-u_OP = xyz_OP./(xyz_OP(1)^2+xyz_OP(2)^2+xyz_OP(3)^2)^(1/2);
-u_OP = simplify(u_OP, 'Steps', 10);
+xyz = T(1:3,4);
+J = jacobian(xyz, [phi(t) r(t) theta_1(t) theta_2(t)]);
 
 %% Conservative energies
 G_f = m*g*xyz(3);
@@ -50,7 +44,7 @@ z_dot = diff(xyz(3),t);
 xyz_dot = [x_dot;
     y_dot;
     z_dot]; 
-v_sq = simplify(x_dot^2 + y_dot^2 + z_dot^2, 'Steps', 10);
+v_sq = x_dot^2 + y_dot^2 + z_dot^2;
 
 %(sp*(s1*r' + l*c12*(t1' + t2') + c1*r*t1') + cp*(l*s12 + s1*r)*p')^2 + (cp*(s1*r' + l*c12*(t1' + t2') + c1*r*t1') - sp*(l*s12 + s1*r)*p')^2 + (l*s12*(t1' + t2') - c1*r' + s1*r*t1')^2
 
@@ -63,28 +57,24 @@ L = T - U;
 dL_dPhi = diff(L, phi(t));
 dL_dPhi_dot = diff(L, diff(phi(t),t));
 dt_dL_dPhi_dot = diff(dL_dPhi_dot,t);
-Q_Phi = dL_dPhi - dt_dL_dPhi_dot;
-Q_Phi = simplify( Q_Phi, 'Steps', 10);
+Q_Phi = dL_dPhi - dt_dL_dPhi_dot; 
 
 dL_dTheta_1 = diff(L, theta_1(t));
 dL_dTheta_1_dot = diff(L, diff(theta_1(t),t));
 dt_dL_dTheta_1_dot = diff(dL_dTheta_1_dot,t);
-Q_Theta_1 = dL_dTheta_1 - dt_dL_dTheta_1_dot;
-Q_Theta_1 = simplify(Q_Theta_1, 'Steps', 10);
+Q_Theta_1 = dL_dTheta_1 - dt_dL_dTheta_1_dot; 
 
 dL_dTheta_2 = diff(L, theta_2(t));
 dL_dTheta_2_dot = diff(L, diff(theta_2(t),t));
 dt_dL_dTheta_2_dot = diff(dL_dTheta_2_dot,t);
-Q_Theta_2 = dL_dTheta_2 - dt_dL_dTheta_2_dot;
-Q_Theta_2 = simplify(Q_Theta_2, 'Steps', 10);
+Q_Theta_2 = dL_dTheta_2 - dt_dL_dTheta_2_dot; 
 
 dL_dr = diff(L, r(t));
 dL_dr_dot = diff(L, diff(r(t),t));
 dt_dL_dr_dot = diff(dL_dr_dot,t);
-Q_r = dL_dr - dt_dL_dr_dot;
-Q_r = simplify(Q_r, 'Steps', 10);
+Q_r = dL_dr - dt_dL_dr_dot; 
 
 eqs = [ Q_Phi; Q_Theta_1; Q_Theta_2; Q_r];
 %% rheonomic holonomic Constraint
-
-
+lambda = dt_dL_dPhi_dot; %
+lambda = simplify(lambda, 'Steps', 1000);
