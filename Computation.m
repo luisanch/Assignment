@@ -2,7 +2,7 @@ clear variables
 close all
 clc
 
-syms phi(t) theta_1(t) theta_2(t) r(t) l m g k r_0 t w lambda
+syms phi(t) theta_1(t) theta_2(t) r(t) l m g k r_0 t w lambda 
 
 c_phi = cos(phi(t));
 s_phi = sin(phi(t));
@@ -38,6 +38,13 @@ x_dot = diff(xyz(1),t);
 y_dot = diff(xyz(2),t);
 z_dot = diff(xyz(3),t);
 
+syms u(t)
+%diff(u(t),t)
+
+x_dot_u = cos(phi(t))*diff(u(t),t) - sin(phi(t))*u(t)*diff(phi(t),t);
+y_dot_u = sin(phi(t))*diff(u(t),t) - cos(phi(t))*u(t)*diff(phi(t),t);
+z_dot_u = l*sin(theta_1(t) + theta_2(t)) * diff(theta_2(t),t) - cos(theta_1(t))*diff(r(t),t) + diff(theta_1(t),t)*u(t);
+
 %c(p)*(s(t1)*r' + l*c12*(t1' + t2') + c(t1)*r*t1') - s(p)*(l*s12 + s(t1)*r)*p'
 %s(p)*(s(t1)*r' + l*c12*(t1' + t2') + c(t1)*r*t1') + c(p)*(l*s12 + s(t1)*r)*p'
 %l*s12*(t1' + t2') - c(t1)*r' + s(t1)*r*t1'
@@ -48,14 +55,22 @@ xyz_dot = [x_dot;
 v_sq = x_dot^2 + y_dot^2 + z_dot^2; 
 T = 0.5*m*(x_dot^2 + y_dot^2 + z_dot^2);
 
+T_u = 0.5*m*(x_dot_u^2 + y_dot_u^2 + z_dot_u^2);
+
 %% Lagrangian
 L = T - U;
+L_u = T_u - U; 
 
 %% diferential equations for Lagrangian
 dL_dPhi = diff(L, phi(t));
 dL_dPhi_dot = diff(L, diff(phi(t),t));
 dt_dL_dPhi_dot = diff(dL_dPhi_dot,t);
 Q_Phi = dL_dPhi - dt_dL_dPhi_dot; 
+
+u_dL_dPhi = diff(L_u, phi(t));
+u_dL_dPhi_dot = diff(L_u, diff(phi(t),t));
+u_dt_dL_dPhi_dot = diff(dL_dPhi_dot,t);
+u_Q_Phi = dL_dPhi - dt_dL_dPhi_dot; 
 
 dL_dTheta_1 = diff(L, theta_1(t));
 dL_dTheta_1_dot = diff(L, diff(theta_1(t),t));
@@ -81,3 +96,13 @@ lambda = simplify(lambda, 'Steps', 1000);
 % 2*p!*m*(l*s12+r*s1)(s1*r!+c1*r*t1!+l*c12*t!+lc12t2!)
 % u: (l*s12+r*s1), u!: (s1*r!+c1*r*t1!+l*c12*t!+lc12t2!)
 % 2*p!*m*u*u!
+
+test_r = k*r_0 - k*r(t) + g*m*cos(theta_1(t)) + (m*r(t)*diff(phi(t), t)^2)/2 - (l*m*cos(2*theta_1(t) + theta_2(t))*diff(phi(t), t)^2)/2 - (m*cos(2*theta_1(t))*r(t)*diff(phi(t), t)^2)/2 + (l*m*cos(theta_2(t))*diff(phi(t), t)^2)/2;
+test_th2 =-l*m*(g*sin(theta_1(t) + theta_2(t)) - (l*sin(2*theta_1(t) + 2*theta_2(t))*diff(phi(t), t)^2)/2 - (sin(2*theta_1(t) + theta_2(t))*r(t)*diff(phi(t), t)^2)/2 + (sin(theta_2(t))*r(t)*diff(phi(t), t)^2)/2);
+test_th1 = m*((sin(2*theta_1(t))*r(t)^2*diff(phi(t), t)^2)/2 - g*sin(theta_1(t))*r(t) + (l^2*sin(2*theta_1(t) + 2*theta_2(t))*diff(phi(t), t)^2)/2 - g*l*sin(theta_1(t) + theta_2(t)) + l*sin(2*theta_1(t) + theta_2(t))*r(t)*diff(phi(t), t)^2);
+
+eqns = [test_r, test_th1, test_th2];
+vars = [theta_2(t) theta_1(t)];
+
+hmm = (m*r(t))/2 - (l*m*cos(2*theta_1(t) + theta_2(t)))/2 - (m*cos(2*theta_1(t))*r(t))/2 + (l*m*cos(theta_2(t)))/2;
+centripetal = diff(phi(t), t)^2 * (l*sin(theta_1(t)+theta_2(t)) + r*sin(theta_1(t))) * m;
